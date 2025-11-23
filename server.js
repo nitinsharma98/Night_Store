@@ -13,7 +13,7 @@ app.use(express.json());
 connectDB();
 
 // routes
-app.use("/api/user", userRoutes);
+app.use("/api/auth", require("./routes/authRoutes"));
 
 app.get("/", (req, res) => {
   res.send("Backend is working!");

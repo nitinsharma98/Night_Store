@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const DEFAULT_AVATAR = "https://yourcdn.com/default-avatar.png";
 
 /* ---------------------------------------------
    SUB-SCHEMA: Connected Apps
@@ -24,22 +23,19 @@ const locationSchema = new mongoose.Schema({
    USER MAIN SCHEMA
 ---------------------------------------------- */
 const userSchema = new mongoose.Schema({
-  avatarUrl: { type: String, default: DEFAULT_AVATAR },
+  avatarUrl: { type: String  },
 
-  email: { type: String, unique: true, required: true },
-  username: { type: String, unique: true, required: true },
-  gender: { type: String, enum: ["male", "female"], required: true },
+  email: { type: String, unique: true },
+  username: { type: String },
 
-  nightMail: { type: String, unique: true, required: true },
-  passwordHash: { type: String, required: true },
+  gender: { type: String, enum: ["male", "female"]},
 
-  verificationToken: String,
-  verificationTokenExpires: Date,     // We'll store expiry time here
-  verified: { type: Boolean, default: false },
+  nightMail: { type: String, unique: true , sparse: true },
+  passwordHash: { type: String },
 
   createdAt: { type: Date, default: Date.now },
 
-  dob: { type: Date, required: true },
+  dob: { type: Date },
   location: locationSchema,
 
   // Grouped data
@@ -47,20 +43,9 @@ const userSchema = new mongoose.Schema({
     appsConnected: [connectedAppSchema],
     lastLogins: [{ type: Date }],
   },
+
+  isCompleted: {type: Boolean , default: false}
 });
-
-/* ---------------------------------------------
-   TTL INDEX (DELETE unverified users after 30 min)
----------------------------------------------- */
-
-// Delete user 30 minutes after `verificationTokenExpires`
-userSchema.index(
-  { verificationTokenExpires: 1 },
-  {
-    expireAfterSeconds: 0,              // expires at the exact timestamp
-    partialFilterExpression: { verified: false } // only unverified deleted
-  }
-);
 
 module.exports = mongoose.model("User", userSchema);
 

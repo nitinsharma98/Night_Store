@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
-const TempVerification = require("../models/TempVerification");
+const TempVerification = require("../models/tempVerification");
 const { generateOtp, hashOtp, verifyOtp } = require("../utils/otp");
 const { sendEmail } = require("../utils/mailer");
 const { generateToken } = require("../utils/jwt");
